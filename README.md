@@ -259,13 +259,8 @@ Os vídeos abaixo foram utilizados como materiais de estudo para a montagem, con
 - [ ] Desenvolver a interface web ou aplicativo.
 - [ ] Realizar testes integrados e documentar os resultados.
 
-## 13. Limitações de Segurança
 
-Este projeto é um protótipo educacional destinado a demonstrar conceitos de monitoramento industrial e IoT. Ele não substitui dispositivos de segurança industrial certificados, como cortinas de luz, scanners de segurança ou sistemas de parada de emergência.
-
-A aplicação em ambientes industriais reais exige avaliação de riscos, validação técnica e utilização de equipamentos adequados por profissionais qualificados.
-
-## 14. Status do Projeto
+## 13. Status do Projeto
 
 **Em desenvolvimento.**
 
