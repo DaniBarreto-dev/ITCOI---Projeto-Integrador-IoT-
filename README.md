@@ -150,10 +150,6 @@ Vídeo utilizado como referência para aprender a configurar e testar o sensor:
 - [ ] Desenvolver a interface web ou aplicativo.
 - [ ] Realizar testes integrados e documentar os resultados.
 
-## ⚠️ Limitações de Segurança
-
-Este projeto é um protótipo educacional para demonstrar conceitos de monitoramento industrial e IoT. Ele não substitui dispositivos de segurança industrial certificados, como cortinas de luz, scanners de segurança ou sistemas de parada de emergência. A aplicação em ambientes reais exige avaliação de riscos e validação por profissionais qualificados.
-
 ## 👨‍💻 Status do Projeto
 
 **Em desenvolvimento.**
