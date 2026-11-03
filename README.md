@@ -247,10 +247,10 @@ Os vídeos abaixo foram utilizados como materiais de estudo para a montagem, con
 ## 12. Próximas Etapas
 
 - [x] Montar o circuito no Tinkercad.
-- [ ] Testar e validar o funcionamento do circuito.
-- [ ] Corrigir a lógica de disparo e medição do sensor ultrassônico.
-- [ ] Definir limites de distância sem sobreposição entre os alertas.
-- [ ] Validar a sinalização dos LEDs e o funcionamento do buzzer.
+- [x] Testar e validar o funcionamento do circuito.
+- [x] Corrigir a lógica de disparo e medição do sensor ultrassônico.
+- [x] Definir limites de distância sem sobreposição entre os alertas.
+- [x] Validar a sinalização dos LEDs e o funcionamento do buzzer.
 - [ ] Definir o hardware e a comunicação de rede.
 - [ ] Configurar o broker MQTT na Raspberry Pi 3B.
 - [ ] Desenvolver a aplicação de recebimento dos dados em Python.
@@ -265,3 +265,171 @@ Os vídeos abaixo foram utilizados como materiais de estudo para a montagem, con
 **Em desenvolvimento.**
 
 O protótipo encontra-se na fase de simulação e implementação do circuito com Arduino, sensor ultrassônico, LEDs e buzzer. A integração com MQTT, Python, banco de dados e interface digital está prevista para as próximas etapas.
+
+---
+
+## 14. Atividade da aula de hoje — Montagem e código atualizado
+
+Nesta aula, foi trabalhado o circuito físico com Arduino Uno, sensor ultrassônico HC-SR04, quatro LEDs e um buzzer. A montagem foi realizada em uma protoboard e o código foi atualizado para controlar os alertas conforme a distância medida.
+
+### Componentes e pinos utilizados na montagem atual
+
+| Componente | Pino do Arduino |
+|---|---:|
+| TRIG do HC-SR04 | 3 |
+| ECHO do HC-SR04 | 4 |
+| LED vermelho | 8 |
+| LED azul | 9 |
+| LED amarelo | 10 |
+| LED verde | 11 |
+| Buzzer | 12 |
+
+### Faixas de distância configuradas no código da aula
+
+- **Vermelho:** distância de até 4 cm; buzzer ligado.
+- **Azul:** acima de 4 cm até 12 cm; buzzer ligado.
+- **Amarelo:** acima de 12 cm até 22 cm; buzzer desligado.
+- **Verde:** acima de 22 cm até 32 cm; buzzer desligado.
+- **Acima de 32 cm ou sem retorno do sensor:** LEDs e buzzer desligados.
+
+A função `piscarLED()` foi ajustada para apagar os quatro LEDs antes de acender o LED correspondente à faixa detectada. Assim, a intenção é que apenas um LED pisque por vez, enquanto os demais permanecem apagados.
+
+O programa também apresenta a distância medida no Monitor Serial, configurado para 9600 baud. A leitura do sensor utiliza `pulseIn()` com tempo limite de 30.000 microssegundos; quando não há retorno, o código atribui o valor 999 à distância.
+
+### Código utilizado na aula
+
+```cpp
+int trigPin = 3;
+int echoPin = 4;
+
+int ledPin1 = 8;  // Vermelho
+int ledPin2 = 9;  // Azul
+int ledPin3 = 10; // Amarelo
+int ledPin4 = 11; // Verde
+
+int buzzerPin = 12;
+
+long sure;
+long mesafe;
+
+// Função para piscar somente um LED
+void piscarLED(int pino, int tempo)
+{
+  // Apaga todos os LEDs
+  digitalWrite(ledPin1, LOW);
+  digitalWrite(ledPin2, LOW);
+  digitalWrite(ledPin3, LOW);
+  digitalWrite(ledPin4, LOW);
+
+  // Acende somente o LED da faixa atual
+  digitalWrite(pino, HIGH);
+  delay(tempo);
+
+  // Apaga o LED
+  digitalWrite(pino, LOW);
+
+  // Desliga o buzzer
+  digitalWrite(buzzerPin, LOW);
+}
+
+void setup()
+{
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+  pinMode(ledPin1, OUTPUT);
+  pinMode(ledPin2, OUTPUT);
+  pinMode(ledPin3, OUTPUT);
+  pinMode(ledPin4, OUTPUT);
+
+  pinMode(buzzerPin, OUTPUT);
+
+  // Garante que todos comecem apagados
+  digitalWrite(ledPin1, LOW);
+  digitalWrite(ledPin2, LOW);
+  digitalWrite(ledPin3, LOW);
+  digitalWrite(ledPin4, LOW);
+  digitalWrite(buzzerPin, LOW);
+
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  // Todos desligados antes da leitura
+  digitalWrite(ledPin1, LOW);
+  digitalWrite(ledPin2, LOW);
+  digitalWrite(ledPin3, LOW);
+  digitalWrite(ledPin4, LOW);
+  digitalWrite(buzzerPin, LOW);
+
+  // Medição do sensor
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+
+  digitalWrite(trigPin, LOW);
+
+  sure = pulseIn(echoPin, HIGH, 30000);
+
+  if (sure == 0)
+  {
+    mesafe = 999;
+  }
+  else
+  {
+    mesafe = sure * 0.0343 / 2;
+  }
+
+  Serial.print("Distancia: ");
+  Serial.println(mesafe);
+
+  // Vermelho: até 4 cm
+  if (mesafe <= 4)
+  {
+    digitalWrite(buzzerPin, HIGH);
+    piscarLED(ledPin1, 25);
+  }
+
+  // Azul: de 5 até 12 cm
+  else if (mesafe <= 12)
+  {
+    digitalWrite(buzzerPin, HIGH);
+    piscarLED(ledPin2, 60);
+  }
+
+  // Amarelo: de 13 até 22 cm
+  else if (mesafe <= 22)
+  {
+    digitalWrite(buzzerPin, LOW);
+    piscarLED(ledPin3, 120);
+  }
+
+  // Verde: de 23 até 32 cm
+  else if (mesafe <= 32)
+  {
+    piscarLED(ledPin4, 200);
+    digitalWrite(buzzerPin, LOW);
+  }
+
+  // Nenhum objeto próximo
+  else
+  {
+    digitalWrite(ledPin1, LOW);
+    digitalWrite(ledPin2, LOW);
+    digitalWrite(ledPin3, LOW);
+    digitalWrite(ledPin4, LOW);
+    digitalWrite(buzzerPin, LOW);
+  }
+
+  // Intervalo com todos apagados
+  delay(100);
+}
+```
+
+### Registro da atividade
+
+Foi documentada a montagem do circuito na protoboard e a atualização do programa para selecionar o LED conforme a distância do obstáculo. A integração com MQTT, Raspberry Pi, Python e banco de dados continua como etapa futura, conforme descrito nas seções anteriores.
+
