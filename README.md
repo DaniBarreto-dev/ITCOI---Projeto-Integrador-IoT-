@@ -950,3 +950,17 @@ Depois, feche o navegador e desconecte os componentes eletrônicos, quando neces
 - O arquivo `uv.lock` deve acompanhar o `pyproject.toml` no repositório para permitir a instalação das mesmas versões de dependências.
 
 ---
+
+**Desenvolvido por:**
+
+- Daniel Barreto de Paula
+- Vinicius Araujo de Sousa
+- Joao Marcos Marinho Baron
+
+**Turma:** ADS2 — SENAI
+
+**Instituição:** SENAI Conde José Vicente de Azevedo
+
+**Projeto:** Monitoramento de Segurança Industrial — IoT
+
+**Ano:** 2026
